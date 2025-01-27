@@ -168,13 +168,22 @@ def add_to_inventory(request):
     if request.method == 'POST':
         form = AddToInventoryForm(request.POST)
         if form.is_valid():
-            # Process the form data and add to inventory
-            item_type = form.cleaned_data['item_type']
+            item_type_barcode = form.cleaned_data['item_type']
             expiration_date = form.cleaned_data['expiration_date']
-            # Handle saving the item to the inventory
-            # Example:
-            # InventoryItem.objects.create(item_type=item_type, expiration_date=expiration_date)
-            return HttpResponse("Item added to inventory successfully.")
+            amount = form.cleaned_data['amount']  # Add the amount from the form if needed
+
+            try:
+                item_type = ItemType.objects.get(unique_barcode=item_type_barcode)
+                IndividualItem.objects.create(
+                    type=item_type,
+                    expiration_date=expiration_date,
+                    amount=amount
+                )
+                return HttpResponse("Item added to inventory successfully.")
+            except ItemType.DoesNotExist:
+                return HttpResponse("Item type not found.", status=404)
+        else:
+            return HttpResponse("Form is invalid.", status=400)
     else:
         form = AddToInventoryForm()
 
