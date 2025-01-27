@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     "fridge",
+    "django.contrib.admin",  # This is required for the admin site
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
